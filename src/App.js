@@ -11,27 +11,23 @@ class App extends React.Component {
 
     this.state = {
       viewId: 0,
-      emails: ["empty"]
+      emails: ["empty"],
+      editFlag:false
     }
     this.searchEmailsAndRender("");
-  }
-
-  getEmail(id, callback) {
-    const emailRequest = `http://localhost:3001/emails/${id}`;
-    fetch(emailRequest)
-      .then((response) => response.json())
-      .then((json) => {
-        console.log("request complete: ", json);
-        callback(json);
-      })
   }
 
   selectEmail(id){
     for(let i=0; i<this.state.emails.length; i++) {
       if(this.state.emails[i].id === id) {
         this.setState({viewId: i});
+        this.setState({editFlag: false})
       }
     }
+  }
+
+  enableEdit(){
+    this.setState({editFlag: true});
   }
   
   searchEmailsAndRender(query) {
@@ -51,14 +47,21 @@ class App extends React.Component {
   render (){
     return (
     <div className="App">
-      <Search onChange={this.searchEmailsAndRender.bind(this)}/>
+      <Search 
+        onChange={this.searchEmailsAndRender.bind(this)}
+        onClick={this.enableEdit.bind(this)}
+      />
 
       
       <div class="row">
 
         <div class="col s3 card-panel blue lighten-5">
-          <button class="waves-effect waves-light btn-small"><i class="material-icons right">email</i>Inbox</button>
-          <a href="#" class="waves-effect waves-light btn-small"><i class="material-icons right">send</i>Sent</a>
+          <button class="waves-effect waves-light btn-small">
+            <i class="material-icons right">email</i>Inbox
+          </button>
+          <button href="#" class="waves-effect waves-light btn-small">
+            <i class="material-icons right">send</i>Sent
+          </button>
           <div>
           <EmailList 
             emails={this.state.emails}
@@ -69,6 +72,7 @@ class App extends React.Component {
 
         <EmailView
           email={this.state.emails[this.state.viewId]}
+          editFlag={this.state.editFlag}
         />
 
       </div>

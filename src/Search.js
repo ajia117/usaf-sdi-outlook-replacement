@@ -1,14 +1,17 @@
 import React from "react";
 
-const Search = ({onChange}) => {
+const Search = ({onChange, onClick}) => {
   return (
     <header class="row">
       <div class="col s3">
-        <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+        <button class="btn-floating btn-large waves-effect waves-light red"
+          onClick={onClick}>
+          <i class="material-icons">add</i>
+        </button>
       </div>
       <form>
         <input 
-          type="text" 
+          type="search" 
           class="col s6" 
           placeholder="Search by keyword..."
           id="searchText"
