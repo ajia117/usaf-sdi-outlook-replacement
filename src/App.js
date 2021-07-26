@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import EmailView from './EmailView';
 import EmailList from './EmailList';
+import Search from './Search';
 
 
 class App extends React.Component {
@@ -10,19 +11,14 @@ class App extends React.Component {
 
     this.state = {
       viewId: 0,
-      emails:["empty until loaded"]
+      emails: ["empty"]
     }
-    this.getEmails((emailArr) => {
-      this.setState({emails: emailArr});
-    });
+    this.searchEmailsAndRender("");
   }
 
   getEmail(id, callback) {
     const emailRequest = `http://localhost:3001/emails/${id}`;
-    fetch(emailRequest, {
-      method: "GET",
-      headers: { Accept: "application/json" }
-    })
+    fetch(emailRequest)
       .then((response) => response.json())
       .then((json) => {
         console.log("request complete: ", json);
@@ -30,43 +26,50 @@ class App extends React.Component {
       })
   }
 
-  getEmails(callback) {
-    const emailRequest = `http://localhost:3001/emails`;
+  selectEmail(id){
+    for(let i=0; i<this.state.emails.length; i++) {
+      if(this.state.emails[i].id === id) {
+        this.setState({viewId: i});
+      }
+    }
+  }
+  
+  searchEmailsAndRender(query) {
+    console.log("search query:", query)
+    const emailRequest = `http://localhost:3001/search?query=${query}`;
     fetch(emailRequest)
       .then((response) => response.json())
       .then((emails) => {
-        callback(emails)
+        this.setState({
+          viewId: 0,
+          emails: emails
+        })
       })
-  }
 
-  selectEmail(id){
-    this.setState({viewId: id})
   }
 
   render (){
     return (
     <div className="App">
-      <header>Search Bar </header>
+      <Search onChange={this.searchEmailsAndRender.bind(this)}/>
 
       
       <div class="row">
 
         <div class="col s3 card-panel blue lighten-5">
-        <a class="waves-effect waves-light btn-small"><i class="material-icons right">cloud</i>button</a>
-        <a class="waves-effect waves-light btn-small"><i class="material-icons right">cloud</i>button</a>
+          <button class="waves-effect waves-light btn-small"><i class="material-icons right">email</i>Inbox</button>
+          <a href="#" class="waves-effect waves-light btn-small"><i class="material-icons right">send</i>Sent</a>
+          <div>
           <EmailList 
             emails={this.state.emails}
             onClick={this.selectEmail.bind(this)}
           />
-
-          
+          </div>
         </div>
 
-        <div class="col s9">
-          <EmailView
-            email={this.state.emails[this.state.viewId]}
-          />
-        </div>
+        <EmailView
+          email={this.state.emails[this.state.viewId]}
+        />
 
       </div>
     </div>
