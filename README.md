@@ -68,3 +68,23 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+Component Structure:
+Email list panel
+Selected Email Details/editor window?
+Search Bar
+
+
+Desired functionality: 
+
+View all emails
+
+View one of emails with all details
+
+Send email
+
+Search for a specified email by subject
+
+
+Email objects: 
+sender, recipient, subject, message, date, id
