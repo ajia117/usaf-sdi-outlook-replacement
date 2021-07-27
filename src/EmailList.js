@@ -10,26 +10,40 @@ const EmailList = ({emails, onClick}) => {
     <div>
     {
       emails.map(email => {
-        let avatarChar = "D";
-        if(email.sender) {
-          avatarChar = email.sender.charAt(0).toUpperCase();
-        }
         return (
-          <div>
-            <Avatar className="purple">
-              {avatarChar}
-            </Avatar>
-            <p onClick={() => onClick(email.id)}>
-              Subj: {email.subject} <br/>
-              From: {email.sender}
-            </p>
-            <div class="divider"> </div>
-          </div>
-          );
+          <EmailListItem
+            email={email}
+            onClick={onClick}
+          />
+        )
       })
     }
     </div>
   ); 
 } 
+
+const EmailListItem = ({email, onClick}) => {
+  let avatarChar = "";
+  if(email.sender) {
+    avatarChar = email.sender.charAt(0).toUpperCase();
+  }
+  return (
+    <div key={email.id} className="emailListItem">
+      <div className="row">
+        <div className="col">
+          <Avatar className="purple">
+            {avatarChar}
+          </Avatar>
+        </div>
+        <p className="col" onClick={() => onClick(email.id)}>
+          Subj: {email.subject} <br/>
+          From: {email.sender}
+        </p>
+      </div>
+      <div className="divider"> </div>
+    </div>
+    );
+
+}
 
 export default EmailList;
