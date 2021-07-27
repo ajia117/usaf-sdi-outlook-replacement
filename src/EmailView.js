@@ -1,32 +1,51 @@
 import React from "react";
 
-const EmailView = ({email, editFlag}) => {
+const user = "jane@galvanize.com"
+
+const EmailView = ({email, editFlag, onSubmit}) => {
   if(!email) {
     return (<p>No email to show!</p>)
   }
 
-  if (editFlag !== true) {
+  if (editFlag) {
     return (
-      <div class="col s9">
-        <h4>Subject: {email.subject} </h4>
-        <p>From: {email.sender}</p>
-        <p>To: {email.recipient}</p>
-        <p>Date: {email.date}</p>
-        <div class="divider"></div>
-        <p>{email.message}</p>
+      <div className="col s9">
+        <h4>New Message</h4>
+        <p>From: {user}</p>
+        <form id="newEmail"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSubmit({
+            sender: user,
+            recipient: document.getElementById("recipient").value,
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value
+          })}}>
+          <label for="recipient">To: </label>
+          <input type="text" id="recipient"></input>
+          <label for="subject">Subject: </label>
+          <input type="text" id="subject"></input>
+          <label for="message">Body: </label>
+          <textarea className="materialize-textarea" id="message"></textarea>
+          <button
+            className="btn waves-effect waves-light"
+            type="submit">
+            Submit
+            <i className="material-icons right">send</i>
+          </button>
+        </form>
+
       </div>
     )
   } else {
     return (
-      <div class="col s9">
-      <h1>Edit Mode</h1>
-      <form>
-        <input type="text" id="sender"></input>
-        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-          <i class="material-icons right">send</i>
-        </button>
-      </form>
-
+      <div className="col s9">
+        <h4>Subject: {email.subject} </h4>
+        <p>From: {email.sender}</p>
+        <p>To: {email.recipient}</p>
+        <p>Date: {email.date}</p>
+        <div className="divider"></div>
+        <p>{email.message}</p>
       </div>
     )
   }

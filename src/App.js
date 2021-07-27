@@ -14,14 +14,16 @@ class App extends React.Component {
       emails: ["empty"],
       editFlag:false
     }
-    this.searchEmailsAndRender("");
+    this.searchEmailsAndRender({ target:{value: ""}});
   }
 
   selectEmail(id){
     for(let i=0; i<this.state.emails.length; i++) {
       if(this.state.emails[i].id === id) {
-        this.setState({viewId: i});
-        this.setState({editFlag: false})
+        this.setState({
+          viewId: i,
+          editFlag: false
+        });
       }
     }
   }
@@ -30,9 +32,9 @@ class App extends React.Component {
     this.setState({editFlag: true});
   }
   
-  searchEmailsAndRender(query) {
-    console.log("search query:", query)
-    const emailRequest = `http://localhost:3001/search?query=${query}`;
+  searchEmailsAndRender(event) {
+    console.log("search query:", event.target.value)
+    const emailRequest = `http://localhost:3001/search?query=${event.target.value}`;
     fetch(emailRequest)
       .then((response) => response.json())
       .then((emails) => {
@@ -41,7 +43,28 @@ class App extends React.Component {
           emails: emails
         })
       })
+  }
 
+  sendEmail(email) {
+    console.log(email);
+    console.log(JSON.stringify(email))
+
+    const emailRequest = `http://localhost:3001/send`
+    fetch(emailRequest, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(email)
+    })
+      .then(response => {
+        if(response.ok) {
+          console.log("POST success: response")
+        } else {
+          throw new Error(response);
+        }
+      })
+      .catch(err => console.log("POST failure: ", err));
   }
 
   render (){
@@ -49,30 +72,23 @@ class App extends React.Component {
     <div className="App">
       <Search 
         onChange={this.searchEmailsAndRender.bind(this)}
-        onClick={this.enableEdit.bind(this)}
+        editClick={this.enableEdit.bind(this)}
       />
 
       
-      <div class="row">
+      <div className="row">
 
-        <div class="col s3 card-panel blue lighten-5">
-          <button class="waves-effect waves-light btn-small">
-            <i class="material-icons right">email</i>Inbox
-          </button>
-          <button href="#" class="waves-effect waves-light btn-small">
-            <i class="material-icons right">send</i>Sent
-          </button>
-          <div>
+        <div className="col s3 card-panel blue lighten-5">
           <EmailList 
             emails={this.state.emails}
             onClick={this.selectEmail.bind(this)}
           />
-          </div>
         </div>
 
         <EmailView
           email={this.state.emails[this.state.viewId]}
           editFlag={this.state.editFlag}
+          onSubmit={this.sendEmail}
         />
 
       </div>
